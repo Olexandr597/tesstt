@@ -40,10 +40,9 @@
                 books.forEach(book => {
                     const bookInfoHTML = `
                         <div class="book">
-                            <h2>Title: ${book.title}</h2>
-                            <p>Author: ${book.author}</p>
                             <img src="${book.book_image}" alt="Book Image">
-                            <p>Contributor: ${book.contributor}</p>
+                            <h2> ${book.title}</h2>
+                            <p> ${book.contributor}</p>
                         </div>
                     `;
                     booksList.innerHTML += bookInfoHTML;
@@ -69,8 +68,11 @@
         fetch('https://books-backend.p.goit.global/books/category-list')
             .then(response => response.json())
             .then(data => {
+                // Сортуємо категорії за їх назвами
+                data.sort((a, b) => a.list_name.localeCompare(b.list_name));
+
                 const categoryList = document.getElementById('categoryList');
-                
+
                 // Додамо категорію "all"
                 const allListItem = document.createElement('li');
                 allListItem.textContent = 'all';
