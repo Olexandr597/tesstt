@@ -1,11 +1,37 @@
-/* Стилі для книг */
-.book {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.book img {
-    max-width: 100%;
-    height: auto;
-}
+ /* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список категорій книг</title>
+</head>
+<body>
+ 
+    <ul id="categoryList">
+      
+    </ul>
+    
+ <ul class="books-list"></ul>
+    <script>
+        // Отримання даних з API
+        fetch('https://books-backend.p.goit.global/books/category-list')
+            .then(response => response.json())
+            .then(data => {
+                const categoryList = document.getElementById('categoryList');
+                data.forEach(item => {
+                    const category = item.list_name;
+                    const listItem = document.createElement('li');
+                    listItem.textContent = category;
+                    listItem.addEventListener('click', () => {
+                        // Додайте вашу логіку обробника подій тут
+                        console.log(`Ви вибрали категорію: ${category}`);
+                    });
+                    categoryList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Помилка отримання даних:', error));
+            
+    </script>
+    <script src="./main.js"></script>
+</body>
+</html> */

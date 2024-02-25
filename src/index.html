@@ -3,12 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Display</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Список категорій книг</title>
 </head>
 <body>
+ 
+    <ul id="categoryList">
+      
+    </ul>
+    
     <ul class="books-list"></ul>
+    
+    <script>
+        async function getBooks(category) {
+            try {
+                const url = `https://books-backend.p.goit.global/books/category?category=${category}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch books');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
 
-    <script src="main.js"></script>
+        async function displayBooks(category) {
+            const booksData = await getBooks(category);
+            const booksList = document.querySelector('.books-list');
+            if (booksList) {
+                booksList.innerHTML = ''; // Очистимо список книг перед відображенням нових
+                booksData.forEach(book => {
+                    const bookInfoHTML = `
+                        <div class="book">
+                            <img src="${book.book_image}" alt="Book Image">
+                            <h2> ${book.title}</h2>
+                            <p> ${book.contributor}</p>
+                        </div>
+                    `;
+                    booksList.innerHTML += bookInfoHTML;
+                });
+            } else {
+                console.error('Element with class "books-list" not found');
+            }
+        }
+
+        fetch('https://books-backend.p.goit.global/books/category-list')
+            .then(response => response.json())
+            .then(data => {
+                const categoryList = document.getElementById('categoryList');
+                data.forEach(item => {
+                    const category = item.list_name;
+                    const listItem = document.createElement('li');
+                    listItem.textContent = category;
+                    listItem.addEventListener('click', () => {
+                        displayBooks(category); // Викликаємо функцію з поточною категорією
+                    });
+                    categoryList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Помилка отримання даних:', error));
+    </script>
 </body>
 </html>
