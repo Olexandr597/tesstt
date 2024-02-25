@@ -17,7 +17,7 @@
         async function getBooks(category) {
             try {
                 let url = 'https://books-backend.p.goit.global/books/all';
-                if (category !== 'all') {
+                if (category !== 'ALL CATEGORIES') {
                     url = `https://books-backend.p.goit.global/books/category?category=${category}`;
                 }
                 const response = await fetch(url);
@@ -73,9 +73,9 @@
 
                 const categoryList = document.getElementById('categoryList');
 
-                // Додамо категорію "all"
+                // Додамо категорію "ALL CATEGORIES"
                 const allListItem = document.createElement('li');
-                allListItem.textContent = 'all';
+                allListItem.textContent = 'ALL CATEGORIES';
                 allListItem.addEventListener('click', () => {
                     displayAllBooks();
                 });
@@ -84,7 +84,7 @@
                 // Додамо інші категорії
                 data.forEach(item => {
                     const category = item.list_name;
-                    if (category !== 'all') {
+                    if (category !== 'ALL CATEGORIES') {
                         const listItem = document.createElement('li');
                         listItem.textContent = category;
                         listItem.addEventListener('click', () => {
