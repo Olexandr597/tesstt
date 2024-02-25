@@ -16,7 +16,10 @@
     <script>
         async function getBooks(category) {
             try {
-                const url = `https://books-backend.p.goit.global/books/category?category=${category}`;
+                let url = 'https://books-backend.p.goit.global/books/all';
+                if (category !== 'all') {
+                    url = `https://books-backend.p.goit.global/books/category?category=${category}`;
+                }
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Failed to fetch books');
@@ -30,16 +33,17 @@
         }
 
         async function displayBooks(category) {
-            const booksData = await getBooks(category);
             const booksList = document.querySelector('.books-list');
             if (booksList) {
                 booksList.innerHTML = ''; // Очистимо список книг перед відображенням нових
-                booksData.forEach(book => {
+                const books = await getBooks(category);
+                books.forEach(book => {
                     const bookInfoHTML = `
                         <div class="book">
+                            <h2>Title: ${book.title}</h2>
+                            <p>Author: ${book.author}</p>
                             <img src="${book.book_image}" alt="Book Image">
-                            <h2> ${book.title}</h2>
-                            <p> ${book.contributor}</p>
+                            <p>Contributor: ${book.contributor}</p>
                         </div>
                     `;
                     booksList.innerHTML += bookInfoHTML;
@@ -49,18 +53,43 @@
             }
         }
 
+        async function displayAllBooks() {
+            const categoryList = document.getElementById('categoryList');
+            if (categoryList) {
+                const categoryItems = categoryList.querySelectorAll('li');
+                categoryItems.forEach(async item => {
+                    const category = item.textContent;
+                    await displayBooks(category);
+                });
+            } else {
+                console.error('Element with id "categoryList" not found');
+            }
+        }
+
         fetch('https://books-backend.p.goit.global/books/category-list')
             .then(response => response.json())
             .then(data => {
                 const categoryList = document.getElementById('categoryList');
+                
+                // Додамо категорію "all"
+                const allListItem = document.createElement('li');
+                allListItem.textContent = 'all';
+                allListItem.addEventListener('click', () => {
+                    displayAllBooks();
+                });
+                categoryList.appendChild(allListItem);
+
+                // Додамо інші категорії
                 data.forEach(item => {
                     const category = item.list_name;
-                    const listItem = document.createElement('li');
-                    listItem.textContent = category;
-                    listItem.addEventListener('click', () => {
-                        displayBooks(category); // Викликаємо функцію з поточною категорією
-                    });
-                    categoryList.appendChild(listItem);
+                    if (category !== 'all') {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = category;
+                        listItem.addEventListener('click', () => {
+                            displayBooks(category);
+                        });
+                        categoryList.appendChild(listItem);
+                    }
                 });
             })
             .catch(error => console.error('Помилка отримання даних:', error));
